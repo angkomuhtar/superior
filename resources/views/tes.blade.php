@@ -11,7 +11,7 @@
         <div class="d-flex flex-center text-right">
             <!--begin::Signin-->
             <div class="login-form login-signin">
-                <form id="form-selesai" action="{{url('selesai')}}" method="post">
+                <form id="form-selesai" action="{{ url('selesai') }}" method="post">
                     @csrf
                     <button class="btn btn-danger" id="btn-selesai">Selesai</button>
                 </form>
@@ -52,7 +52,7 @@
                         </h3>
                         <span class="text-muted font-weight-bold font-size-h4">
 
-                            </span>
+                        </span>
                     </div>
                     <!--begin::Title-->
                     <!--begin::Form group-->
@@ -116,18 +116,18 @@
         function getTes() {
             if (!do_get_test) {
                 do_get_test = true;
-                $.get('{{url('get-tes')}}')
-                    .then(function (res) {
+                $.get('{{ url('get-tes') }}')
+                    .then(function(res) {
                         if (res) {
                             var waktu_sekarang = new Date(res.waktu_sekarang);
                             var waktu_mulai = new Date(res.waktu_mulai);
                             var waktu_selesai = new Date(res.waktu_selesai);
                             if ((waktu_selesai.getTime() - waktu_sekarang.getTime()) <= 0) {
-                                window.location.href = '{{url('hasil-tes')}}'
+                                window.location.href = '{{ url('hasil-tes') }}'
                             }
                             totalSeconds = (waktu_sekarang.getTime() - waktu_mulai.getTime()) / 1000;
                             if (res.data) {
-                                var pilihan = res.data.pilihan.map(function (val, i) {
+                                var pilihan = res.data.pilihan.map(function(val, i) {
                                     $('#pilihan_' + i).val(val);
                                     return '<td>' + val + '</td>'
                                 })
@@ -151,7 +151,7 @@
                                 $('#kolom').html('')
                             }
                         } else {
-                            window.location.href = '{{url('hasil-tes')}}'
+                            window.location.href = '{{ url('hasil-tes') }}'
                         }
                         do_get_test = false;
                     })
@@ -160,25 +160,25 @@
 
         getTes()
         var submit_jawaban = false;
-        $('.submit-answer').on('submit', function (e) {
+        $('.submit-answer').on('submit', function(e) {
             e.preventDefault();
             if (!submit_jawaban) {
                 submit_jawaban = true;
                 $('#item-jawaban').hide();
-                $.post('{{url('submit-jawaban')}}', $(this).serialize())
-                    .then(function () {
+                $.post('{{ url('submit-jawaban') }}', $(this).serialize())
+                    .then(function() {
                         do_get_test = false;
                         getTes();
                         submit_jawaban = false;
                     })
             }
         })
-        setInterval(function () {
+        setInterval(function() {
             getTes()
         }, 1000);
-        $('#btn-selesai').on('click',function (e){
+        $('#btn-selesai').on('click', function(e) {
             e.preventDefault();
-            if (confirm('Ingin Mengakhiri Ujian ?')){
+            if (confirm('Ingin Mengakhiri Ujian ?')) {
                 $('#form-selesai').submit();
             }
         })

@@ -104,15 +104,22 @@ class TesController extends Controller
     public function hasilTes(){
         if (session()->has('peserta') && !session('mulai_tes',false)){
             $peserta = Peserta::with('jawaban','tes.kelompokSoal.kolom.soalJawaban')->find(session('peserta'));
+            // return $peserta;
             if ($peserta){
                 $jawaban = $peserta->jawaban->filter(function ($item){
                     return $item->jawaban_soal === $item->jawaban_peserta;
                 });
+
+                $jawaban_salah = $peserta->jawaban->filter(function ($item){
+                    return $item->jawaban_soal != $item->jawaban_peserta;
+                });
                 $grouped_answer = $jawaban->groupBy('kolom');
+                $grouped_answer_salah = $jawaban_salah->groupBy('kolom');
                 $hasil = [];
                 foreach ($peserta->tes->kelompokSoal->kolom AS $kolom){
                     $hasil[$kolom->kolom] = [
                         'benar' => isset($grouped_answer[$kolom->kolom]) ? $grouped_answer[$kolom->kolom]->count() : 0,
+                        'salah' => isset($grouped_answer_salah[$kolom->kolom]) ? $grouped_answer_salah[$kolom->kolom]->count() : 0,
                         'soal' => $kolom->soalJawaban->count()
                     ];
                 }
